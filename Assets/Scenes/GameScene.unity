@@ -3270,15 +3270,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   cardContainer: {fileID: 145744117}
-  cardPrefabs: {fileID: 1093749184408935417, guid: 4295a26fd7e234541896029b752e35cb, type: 3}
-  cardIcons: []
+  cardPrefabs: {fileID: 1093749184408935417, guid: 4295a26fd7e234541896029b752e35cb,
+    type: 3}
+  cardIcons:
+  - {fileID: 21300000, guid: cf4723e7e6a551641becde84f24e636c, type: 3}
+  - {fileID: 21300000, guid: f58acbde7ebc89a4495e76552849329d, type: 3}
+  - {fileID: 21300000, guid: d5f89f0235725bb4dba8ff7ac69aade5, type: 3}
+  - {fileID: 21300000, guid: 67d1313fa820a4843bcbdcdad345d806, type: 3}
+  - {fileID: 21300000, guid: 61ffe64c04e4af849925b0fb61805e91, type: 3}
+  - {fileID: 21300000, guid: d3a3cb43e510da047ba32bb128298f6f, type: 3}
   scoreText: {fileID: 1959522569}
-  victoryUI: {fileID: 2140001523}
-  levelConfig: {fileID: 11400000, guid: b009889c483675947b7a29deae4336ce, type: 2}
   timerText: {fileID: 1507073941}
   livesText: {fileID: 1964342166}
-  knowledgeContent: {fileID: 1705309387}
-  knowledgeItemPrefab: {fileID: 7883612055238648248, guid: ea91d831c4ebdca42b7a7adc99e0247a, type: 3}
+  victoryUI: {fileID: 2140001523}
+  gameOverUI: {fileID: 0}
+  timeRemaining: 300
+  lives: 5
+  levelConfig: {fileID: 11400000, guid: b009889c483675947b7a29deae4336ce, type: 2}
+  cardPrefab: {fileID: 2908054499011670176, guid: 4295a26fd7e234541896029b752e35cb,
+    type: 3}
 --- !u!224 &1614308857
 RectTransform:
   m_ObjectHideFlags: 0
