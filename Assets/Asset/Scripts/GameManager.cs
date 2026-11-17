@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour
     public float timeRemaining = 300f;
     public int lives = 5;
 
-    [HideInInspector] public LevelConfig levelConfig;
+    public LevelConfig levelConfig;
+    public Transform knowledgeContent;
+    public GameObject knowledgeItemPrefab;
     [HideInInspector] public CardController cardPrefab;
 
     private CardController firstCard;
@@ -40,6 +42,59 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        FindMissingReferences();
+
+        ClearChildren(cardContainer);
+        ClearChildren(knowledgeContent);
+
+        if (cardIcons != null && cardPrefabs != null && cardContainer != null)
+        {
+            totalPairs = cardIcons.Length;
+            for (int i = 0; i < cardIcons.Length; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    GameObject cardObj = Instantiate(cardPrefabs, cardContainer);
+                    CardController card = cardObj.GetComponent<CardController>();
+                    if (card != null)
+                    {
+                        card.InitCard(i, cardIcons[i]);
+                    }
+                }
+            }
+
+            int count = cardContainer.childCount;
+            for (int i = count - 1; i > 0; i--)
+            {
+                int rand = Random.Range(0, i + 1);
+                cardContainer.GetChild(rand).SetSiblingIndex(i);
+            }
+        }
+
+        score = 0;
+        matchedPairs = 0;
+        timeRemaining = 300f;
+        lives = 5;
+        isGameEnded = false;
+        lastSecond = -1;
+
+        UpdateScoreUI();
+        UpdateTimerUI();
+        UpdateLivesUI();
+
+        if (victoryUI != null)
+        {
+            victoryUI.SetActive(false);
+        }
+
+        if (gameOverUI != null)
+        {
+            gameOverUI.SetActive(false);
+        }
+    }
+
+    private void FindMissingReferences()
+    {
         if (cardContainer == null)
         {
             GameObject gridObj = GameObject.Find("CardGrid");
@@ -48,6 +103,11 @@ public class GameManager : MonoBehaviour
         if (cardPrefabs == null && cardPrefab != null)
         {
             cardPrefabs = cardPrefab.gameObject;
+        }
+        if (levelConfig == null)
+        {
+            LevelConfig[] configs = Resources.FindObjectsOfTypeAll<LevelConfig>();
+            if (configs != null && configs.Length > 0) levelConfig = configs[0];
         }
         if ((cardIcons == null || cardIcons.Length == 0) && levelConfig != null && levelConfig.pairsInLevel != null)
         {
@@ -84,57 +144,22 @@ public class GameManager : MonoBehaviour
                 if (resTf != null) victoryUI = resTf.gameObject;
             }
         }
-
-        if (cardContainer != null)
+        if (knowledgeContent == null)
         {
-            for (int i = cardContainer.childCount - 1; i >= 0; i--)
-            {
-                Destroy(cardContainer.GetChild(i).gameObject);
-            }
+            GameObject contentObj = GameObject.Find("Content");
+            if (contentObj != null) knowledgeContent = contentObj.transform;
         }
-
-        if (cardIcons != null && cardPrefabs != null && cardContainer != null)
+        if (knowledgeItemPrefab == null)
         {
-            totalPairs = cardIcons.Length;
-            for (int i = 0; i < cardIcons.Length; i++)
+            GameObject[] allObjs = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (GameObject obj in allObjs)
             {
-                for (int j = 0; j < 2; j++)
+                if (obj != null && obj.name == "KnowledgeItem" && obj.scene.name == null)
                 {
-                    GameObject cardObj = Instantiate(cardPrefabs, cardContainer);
-                    CardController card = cardObj.GetComponent<CardController>();
-                    if (card != null)
-                    {
-                        card.InitCard(i, cardIcons[i]);
-                    }
+                    knowledgeItemPrefab = obj;
+                    break;
                 }
             }
-
-            int count = cardContainer.childCount;
-            for (int i = count - 1; i > 0; i--)
-            {
-                int rand = Random.Range(0, i + 1);
-                cardContainer.GetChild(rand).SetSiblingIndex(i);
-            }
-        }
-
-        score = 0;
-        matchedPairs = 0;
-        timeRemaining = 300f;
-        lives = 5;
-        isGameEnded = false;
-        lastSecond = -1;
-        UpdateScoreUI();
-        UpdateTimerUI();
-        UpdateLivesUI();
-
-        if (victoryUI != null)
-        {
-            victoryUI.SetActive(false);
-        }
-
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(false);
         }
     }
 
@@ -195,6 +220,7 @@ public class GameManager : MonoBehaviour
             score += 1;
             matchedPairs += 1;
             UpdateScoreUI();
+            AddKnowledgeEntry(firstCard.id);
 
             if (matchedPairs >= totalPairs)
             {
@@ -235,7 +261,14 @@ public class GameManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + score;
+            if (scoreText.gameObject.name.Contains("Pair"))
+            {
+                scoreText.text = "Số cặp đã hoàn thành: " + matchedPairs + "/" + totalPairs;
+            }
+            else
+            {
+                scoreText.text = "Score: " + score;
+            }
         }
     }
 
@@ -259,6 +292,63 @@ public class GameManager : MonoBehaviour
         if (livesText != null)
         {
             livesText.text = lives.ToString();
+        }
+    }
+
+    private void AddKnowledgeEntry(int index)
+    {
+        if (knowledgeContent == null || levelConfig == null || levelConfig.pairsInLevel == null)
+        {
+            return;
+        }
+        if (index < 0 || index >= levelConfig.pairsInLevel.Count)
+        {
+            return;
+        }
+
+        CardPairData data = levelConfig.pairsInLevel[index];
+        if (data == null)
+        {
+            return;
+        }
+
+        if (knowledgeItemPrefab != null)
+        {
+            GameObject item = Instantiate(knowledgeItemPrefab, knowledgeContent);
+            Transform logoTf = item.transform.Find("LogoImage");
+            if (logoTf != null)
+            {
+                Image logo = logoTf.GetComponent<Image>();
+                if (logo != null) logo.sprite = data.cardSprite;
+            }
+
+            Transform descTf = item.transform.Find("DescriptionText");
+            if (descTf != null)
+            {
+                TMP_Text desc = descTf.GetComponent<TMP_Text>();
+                if (desc != null) desc.text = "<b>" + data.clubName + "</b>\n" + data.knowledgeDescription;
+            }
+        }
+        else
+        {
+            GameObject entryObj = new GameObject("Entry");
+            entryObj.transform.SetParent(knowledgeContent, false);
+            TMP_Text entry = entryObj.AddComponent<TextMeshProUGUI>();
+            entry.fontSize = 20;
+            entry.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+            entry.text = "<b>" + data.clubName + "</b>: " + data.knowledgeDescription;
+        }
+    }
+
+    private void ClearChildren(Transform parent)
+    {
+        if (parent == null)
+        {
+            return;
+        }
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(parent.GetChild(i).gameObject);
         }
     }
 }
