@@ -3270,25 +3270,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   cardContainer: {fileID: 145744117}
-  cardPrefabs: {fileID: 1093749184408935417, guid: 4295a26fd7e234541896029b752e35cb,
-    type: 3}
+  cardPrefabs: {fileID: 1093749184408935417, guid: 4295a26fd7e234541896029b752e35cb, type: 3}
   cardIcons: []
   scoreText: {fileID: 1959522569}
   victoryUI: {fileID: 2140001523}
-  cardPrefab: {fileID: 2908054499011670176, guid: 4295a26fd7e234541896029b752e35cb,
-    type: 3}
-  cardGrid: {fileID: 145744118}
   levelConfig: {fileID: 11400000, guid: b009889c483675947b7a29deae4336ce, type: 2}
-  mismatchDelay: 0.5
   timerText: {fileID: 1507073941}
   livesText: {fileID: 1964342166}
-  knowledgePanel: {fileID: 2024251847}
-  clubNameText: {fileID: 0}
-  knowledgeDescText: {fileID: 0}
-  timeLimit: 240
-  maxLives: 5
-  knowledgeItemPrefab: {fileID: 7883612055238648248, guid: ea91d831c4ebdca42b7a7adc99e0247a,
-    type: 3}
+  knowledgeContent: {fileID: 1705309387}
+  knowledgeItemPrefab: {fileID: 7883612055238648248, guid: ea91d831c4ebdca42b7a7adc99e0247a, type: 3}
 --- !u!224 &1614308857
 RectTransform:
   m_ObjectHideFlags: 0
