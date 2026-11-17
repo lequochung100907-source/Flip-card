@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     private int matchedPairs = 0;
     private int totalPairs = 0;
 
-    // Tạo sẵn 1 lần để tái sử dụng trong Coroutine, tránh tốn bộ nhớ
     private WaitForSeconds waitCheck = new WaitForSeconds(0.75f);
     private WaitForSeconds waitUnflip = new WaitForSeconds(0.4f);
 
@@ -63,7 +62,6 @@ public class GameManager : MonoBehaviour
             totalPairs = cardIcons.Length;
             for (int i = 0; i < cardIcons.Length; i++)
             {
-                // Sinh 2 thẻ giống nhau cho mỗi cặp bằng vòng lặp
                 for (int j = 0; j < 2; j++)
                 {
                     GameObject cardObj = Instantiate(cardPrefabs, cardContainer);
@@ -75,7 +73,6 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            // Trộn vị trí các thẻ bằng thuật toán Fisher-Yates
             int count = cardContainer.childCount;
             for (int i = count - 1; i > 0; i--)
             {

@@ -109,7 +109,6 @@ public class CardController : MonoBehaviour
         }
     }
 
-    // Sự kiện gọi từ Animation Event ở góc xoay 90 độ (0.133s)
     public void OnFlipShowFront()
     {
         if (frontGroup != null) frontGroup.SetActive(true);
